@@ -1,21 +1,22 @@
 import {
   Transaction,
+  addTransactions,
   deleteTransaction,
   getPayees,
-  importTransactions,
   updateTransaction,
 } from '@actual-app/api';
-import { createHmac } from 'crypto';
+import { BinaryLike, createHmac } from 'crypto';
+import 'dotenv/config';
 import { Request, Response } from 'express';
 import { Relationship, RelationshipData, UpApi, WebhookEventCallback } from 'up-bank-api';
 import { getActualAccountId } from './accounts';
 import { importedIdFor, mapTransaction } from './transaction';
 
 const upApi = new UpApi(process.env.UP_API_KEY || '');
-
 const UP_WEBHOOK_SECRET = process.env.UP_WEBHOOK_SECRET || '';
 
-const buildSignature = (body) => createHmac('sha256', UP_WEBHOOK_SECRET).update(body).digest('hex');
+const buildSignature = (body: BinaryLike) =>
+  createHmac('sha256', UP_WEBHOOK_SECRET).update(body).digest('hex');
 
 export async function webhook(req: Request, res: Response) {
   const _403 = () => res.send(JSON.stringify({ statusCode: 403, body: '' }));
@@ -93,7 +94,9 @@ export async function transactionCreated(t: Relationship<RelationshipData<'trans
     transaction = mapTransaction(upTransaction);
   }
 
-  await importTransactions(transaction.account, [transaction]);
+  await addTransactions(transaction.account, [transaction], {
+    runTransfers: true,
+  });
 }
 
 export async function transactionUpdated(t: Relationship<RelationshipData<'transactions'>>) {
