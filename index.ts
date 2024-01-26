@@ -4,6 +4,7 @@ import { webhook } from './webhook';
 dotenv.config();
 
 const app = express();
+app.use(express.raw());
 
 app.post('/webhook', webhook);
 app.listen(5987, () => {
