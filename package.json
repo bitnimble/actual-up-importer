@@ -1,0 +1,17 @@
+{
+  "name": "actual-up-importer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@actual-app/api": "^6.4.0",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "tsx": "^4.7.0",
+    "up-bank-api": "^1.5.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.7"
+  }
+}
