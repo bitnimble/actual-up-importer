@@ -66,7 +66,7 @@ export async function transactionCreated(t: Relationship<RelationshipData<'trans
   const upTransaction = (await upApi.transactions.retrieve(t.data.id)).data;
   console.log(`Up Transaction: ${JSON.stringify(upTransaction)}`);
 
-  let transaction: Transaction;
+  let transaction: Transaction | undefined;
   if (upTransaction.relationships.transferAccount.data?.id) {
     console.log('Internal transfer');
     if (upTransaction.attributes.amount.valueInBaseUnits < 0) {
@@ -94,9 +94,11 @@ export async function transactionCreated(t: Relationship<RelationshipData<'trans
     transaction = mapTransaction(upTransaction);
   }
 
-  await addTransactions(transaction.account, [transaction], {
-    runTransfers: true,
-  });
+  if (transaction) {
+    await addTransactions(transaction.account, [transaction], {
+      runTransfers: true,
+    });
+  }
 }
 
 export async function transactionUpdated(t: Relationship<RelationshipData<'transactions'>>) {

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
   "dependencies": {
     "@actual-app/api": "^6.4.0",
     "dotenv": "^16.4.1",

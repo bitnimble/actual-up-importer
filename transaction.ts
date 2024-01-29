@@ -6,9 +6,16 @@ export function importedIdFor(upId: string) {
   return `UP_BANK:${upId.slice(9)}`;
 }
 
-export function mapTransaction(up: TransactionResource, payeeId?: ActualType.Id): Transaction {
+export function mapTransaction(
+  up: TransactionResource,
+  payeeId?: ActualType.Id
+): Transaction | undefined {
+  const actualAccount = getActualAccountId(up.relationships.account.data.id);
+  if (!actualAccount) {
+    return;
+  }
   const base: Transaction = {
-    account: getActualAccountId(up.relationships.account.data.id),
+    account: actualAccount,
     amount: up.attributes.amount.valueInBaseUnits,
     date: up.attributes.createdAt.slice(0, 'YYYY-MM-DD'.length),
     cleared: up.attributes.status === 'SETTLED',
